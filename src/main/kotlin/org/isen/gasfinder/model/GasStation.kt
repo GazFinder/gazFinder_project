@@ -4,5 +4,5 @@ package org.isen.gasfinder.model
 //--------------v------------------
 //import javax.xml.stream.Location
 
-data class GasStation(val location: Location, val pricePerGallon: Double, val services: List<String>){
+data class GasStation(val location: GeoPoint, val pricePerGallon: Double, val services: List<String>){
 }

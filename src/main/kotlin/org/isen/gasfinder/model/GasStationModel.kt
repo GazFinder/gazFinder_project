@@ -26,6 +26,7 @@ class GasStationModel {
 
     fun getGasStationsAlongItinerary(): List<GasStation> {
         val itinerary = selectedItinerary ?: return emptyList()
-        return gasStations.filter { it.location in itinerary }
+        //return gasStations.filter { it.location in itinerary }
+        return emptyList()
     }
 }

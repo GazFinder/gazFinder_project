@@ -2,25 +2,25 @@ package org.isen.gasfinder.view
 
 import org.isen.gasfinder.model.GasStationModel
 
-class GasStationMapView(val model: GasStationModel.GasStationModel) {
-    fun displayGasStationsOnMap(map: Map) {
+class GasStationMapView(val model: GasStationModel) {
+    fun displayGasStationsOnMap() {
         val gasStations = model.getGasStations()
         for (gasStation in gasStations) {
-            map.addMarker(gasStation.location)
+            //map.addMarker(gasStation.location)
         }
     }
 
-    fun displayGasStationsAlongItineraryOnMap(map: Map) {
+    fun displayGasStationsAlongItineraryOnMap() {
         val gasStations = model.getGasStationsAlongItinerary()
         for (gasStation in gasStations) {
-            map.addMarker(gasStation.location, color = Map.MarkerColor.GREEN)
+            //map.addMarker(gasStation.location, color = Map.MarkerColor.GREEN)
         }
     }
 
-    fun displaySearchResultsOnMap(map: Map, searchTerm: String) {
+    fun displaySearchResultsOnMap(searchTerm: String) {
         val gasStations = model.searchGasStations(searchTerm)
         for (gasStation in gasStations) {
-            map.addMarker(gasStation.location, color = Map.MarkerColor.BLUE)
+            //map.addMarker(gasStation.location, color = Map.MarkerColor.BLUE)
         }
     }
 }
