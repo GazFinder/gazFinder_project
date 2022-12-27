@@ -18,9 +18,8 @@ class GasStationMapView(val model: GasStationModel) {
     }
 
     fun displaySearchResultsOnMap(searchTerm: String) {
-        val gasStations = model.searchGasStations(searchTerm)
-        for (gasStation in gasStations) {
+      //  val gasStations = model.searchGasStations(searchTerm)
+        //for (gasStation in gasStations) {
             //map.addMarker(gasStation.location, color = Map.MarkerColor.BLUE)
         }
     }
-}

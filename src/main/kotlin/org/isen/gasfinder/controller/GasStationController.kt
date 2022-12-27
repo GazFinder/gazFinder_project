@@ -2,20 +2,53 @@ package org.isen.gasfinder.controller
 
 import org.isen.gasfinder.model.GasStation
 import org.isen.gasfinder.model.GasStationModel
-import org.isen.gasfinder.view.GasStationListView
-import org.isen.gasfinder.view.GasStationMapView
-import org.isen.gasfinder.view.ItineraryInputView
-import org.isen.gasfinder.view.SearchInputView
+import org.isen.gasfinder.model.IGasStationModel
+import org.isen.gasfinder.view.*
 
-class GasStationController(
-    private val model: GasStationModel,
-    private val mapView: GasStationMapView,
-    private val listView: GasStationListView,
-    private val itineraryInputView: ItineraryInputView,
-    private val searchInputView: SearchInputView
-) {
+class GasStationController(val model: IGasStationModel) {
+
+    val views = mutableListOf<IGasStationView>()
+
+
+    fun loadGasStationInformation() {
+        this.model.findGasStationInformation()
+    }
+
+
+    fun selectedStation(id: Long) {
+        model.changeCurrentSelection(id)
+    }
+
+    fun registerViewToGasData(v: IGasStationView) {
+        if (!this.views.contains(v)) {
+            this.views.add(v)
+            this.model.register(IGasStationModel.DATATYPE_STATION, v)
+        }
+    }
+
+    fun registerViewToCartoData(v: IGasStationView) {
+        if (!this.views.contains(v)) {
+            this.views.add(v)
+            this.model.register(IGasStationModel.DATATYPE_CARTO, v)
+        }
+    }
+
+
+    fun displayViews() {
+        views.forEach() {
+            it.display()
+        }
+    }
+
+    fun closeView() {
+        views.forEach() {
+            it.close()
+        }
+    }
+
+
     fun handleSearch() {
-        val searchTerm = searchInputView.getSearchTermFromUser()
+        // val searchTerm = searchInputView.getSearchTermFromUser()
         //mapView.displaySearchResultsOnMap(searchTerm)
         //listView.displaySearchResultsInList(searchTerm)
     }
@@ -33,8 +66,8 @@ class GasStationController(
     }
 
     fun handleItinerarySelected() {
-        val itinerary = itineraryInputView.getItineraryFromUser()
-        model.selectedItinerary = itinerary
+        //  val itinerary = itineraryInputView.getItineraryFromUser()
+        //model.selectedItinerary = itinerary
         //mapView.displayGasStationsAlongItineraryOnMap()
         //listView.displayGasStationsAlongItineraryInList()
     }
