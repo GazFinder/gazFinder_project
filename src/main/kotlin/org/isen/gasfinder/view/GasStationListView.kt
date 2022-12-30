@@ -1,3 +1,4 @@
+package org.isen.gasfinder.view/*
 package org.isen.gasfinder.view
 
 import org.isen.gasfinder.model.GasStation
@@ -21,4 +22,4 @@ class GasStationListView(val model: GasStationModel) {
     fun displaySearchResultsInList(list: List<GasStation>, searchTerm: String){
 
     }
-}
+}*/

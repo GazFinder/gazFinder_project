@@ -35,7 +35,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.1")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.20")
-
     implementation("org.json:json:20210307")
 }
 

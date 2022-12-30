@@ -2,34 +2,29 @@ package org.isen.gasfinder.model
 
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.google.gson.Gson
-import org.apache.logging.log4j.kotlin.Logging
-import org.apache.logging.log4j.kotlin.logger
 
+data class GasStation( val records:List<Record>) {
 
-data class GasStationInformation(val data:GasStation, val lastUpdatedOther:Long, val ttl:Int) {
-
-    class Deserializer: ResponseDeserializable<GasStationInformation> {
-        override fun deserialize(content: String): GasStationInformation {
-            println(content)
-            return Gson().fromJson(content, GasStationInformation::class.java)
+    class Deserializer: ResponseDeserializable<GasStation> {
+        override fun deserialize(content: String): GasStation {
+            return Gson().fromJson(content, GasStation::class.java)
 
         }
     }
 }
 
-
-data class GasStation(val gasStations:List<GasStationInfo>)
-
-data class GasStationInfo(
-        val id:String, // id unique de la station
-        val cp:String, // code postal de la station
-        val pop:String, // si c'est sur autoroute ou route simple
-        val adresse:String, // l'adresse de la station
-        val ville:String, //la ville de la station
-        //val schedule:List<String>, //horaires détaillé de la station
-        val geom: GeoPoint, // localisation de la station
-        val prix_id:String, //id du carburant
-        val prix_valeur:Float, //prix du carburant
-        val prix_nom:String,//nom carburant
-        val services_service: List<String> // caractéristiques de la station
-        )
+data class Record(
+    val fields:Fields
+)
+data class Fields(
+    val adresse: String,
+    val cp: String,
+    val geom: List<Double>,
+    val id: String,
+    val pop: String,
+    val prix_id: String,
+    val prix_nom: String,
+    val prix_valeur: Double,
+    val services_service: String,
+    val ville: String
+)

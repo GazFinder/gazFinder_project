@@ -1,9 +1,9 @@
 package org.isen.gasfinder.controller
 
-import org.isen.gasfinder.model.GasStation
-import org.isen.gasfinder.model.GasStationModel
+
+
 import org.isen.gasfinder.model.IGasStationModel
-import org.isen.gasfinder.view.*
+import org.isen.gasfinder.view.IGasStationView
 
 class GasStationController(val model: IGasStationModel) {
 
@@ -15,9 +15,9 @@ class GasStationController(val model: IGasStationModel) {
     }
 
 
-    fun selectedStation(id: Long) {
-        model.changeCurrentSelection(id)
-    }
+   // fun selectedStation(id: String) {
+     //   model.changeCurrentSelection(id)
+    //}
 
     fun registerViewToGasData(v: IGasStationView) {
         if (!this.views.contains(v)) {
@@ -59,11 +59,7 @@ class GasStationController(val model: IGasStationModel) {
         //listView.displayGasStationsInList()
     }
 
-    fun handleGasStationSelected(gasStation: GasStation) {
-        //model.selectedGasStation = gasStation
-        //mapView.displayGasStationDetailsOnMap(gasStation)
-        //listView.displayGasStationDetailsInList(gasStation)
-    }
+
 
     fun handleItinerarySelected() {
         //  val itinerary = itineraryInputView.getItineraryFromUser()

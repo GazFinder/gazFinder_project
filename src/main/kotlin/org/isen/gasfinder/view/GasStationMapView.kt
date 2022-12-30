@@ -1,5 +1,6 @@
-package org.isen.gasfinder.view
 
+package org.isen.gasfinder.view
+/*
 import org.isen.gasfinder.model.GasStationModel
 
 class GasStationMapView(val model: GasStationModel) {
@@ -23,3 +24,4 @@ class GasStationMapView(val model: GasStationModel) {
             //map.addMarker(gasStation.location, color = Map.MarkerColor.BLUE)
         }
     }
+*/

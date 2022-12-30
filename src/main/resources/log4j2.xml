@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="filename">test_velib</Property>
+        <Property name="filename">test_GasFinder</Property>
     </Properties>
 
     <Appenders>
@@ -40,11 +40,11 @@
         <Root level="INFO">
             <AppenderRef ref="RFile"/>
         </Root>
-        <Logger name="My Velib Project" level="DEBUG" additivity="false">
+        <Logger name="GasFinder" level="DEBUG" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RFile"/>
         </Logger>
-        <Logger name="My Velib Project" level="INFO" additivity="false">
+        <Logger name="GasFinder" level="INFO" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RFile_DIE"/>
         </Logger>

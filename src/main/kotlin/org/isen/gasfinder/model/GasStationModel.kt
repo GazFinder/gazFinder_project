@@ -9,18 +9,48 @@ import kotlin.properties.Delegates
 class GasStationModel: IGasStationModel {
 
 
-    private val gasStations = mutableListOf<GasStation>()
-
     companion object : Logging
 
     private  val pcs = PropertyChangeSupport(this)
 
 
-    private var gasStationInformation: GasStationInformation? by Delegates.observable(null) {
+    private var gasStationInformation: GasStation? by Delegates.observable(null) {
         _, oldValue, newValue ->
         logger.info("gasStationInformation updated")
         pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, oldValue, newValue)
     }
+
+    private var gasStations = listOf<Record>()
+
+    private var selectedStation:GasStation? by Delegates.observable(null) {
+            _, oldValue, newValue ->
+        logger.info("update selectedStation $newValue")
+        pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, oldValue, newValue)
+    }
+
+/*    override fun changeCurrentSelection(Id: Long) {
+        if (gasStations.isEmpty()) {
+            "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&rows=10&facet=id&facet=cp&facet=pop&facet=adresse&facet=ville&facet=geom&facet=prix_id&facet=prix_valeur&facet=prix_nom&facet=services_service".httpGet()
+                .responseObject(GasStation.Deserializer()) { request, response, result ->
+                    logger.info("StatusCode : ${response.statusCode}")
+                    result.let { (data, error) ->
+                        gasStations = data?.records ?: listOf()
+                        selectedStation = gasStations.find {
+                            it.fields.id == Id
+                        }
+
+                    }
+                }
+        } else {
+            selectedStation = stationDescriptionList.find {
+                it.station_id == id
+            }
+            stationInformation?.let {
+                proximityStations = findProximityStation(0.5f, id, it.data.stations)
+            } ?: logger.warn("pb bc stationInformation is null")
+            mapImage =generateMap(id,proximityStations)
+        }
+    }*/
 
     override fun register(datatype: String?, listener: PropertyChangeListener) {
         if(datatype == null) {
@@ -36,46 +66,35 @@ class GasStationModel: IGasStationModel {
     }
 
     override fun findGasStationInformation() {
-        "https://data.economie.gouv.fr/explore/dataset/prix-carburants-fichier-instantane-test-ods-copie/download/?format=json&timezone=Europe/Berlin&lang=fr"
-                .httpGet().responseObject(GasStationInformation.Deserializer()) { request, response, result ->
+        "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&rows=10&facet=id&facet=cp&facet=pop&facet=adresse&facet=ville&facet=geom&facet=prix_id&facet=prix_valeur&facet=prix_nom&facet=services_service"
+                .httpGet().responseObject(GasStation.Deserializer()) { request, response, result ->
                     logger.info("StatusCode: ${response.statusCode}")
                     result.let { (data,error) -> gasStationInformation = data }
                 }
 
     }
 
-    override fun changeCurrentSelection(id: Long) {
-        TODO("Not yet implemented")
-    }
+   // override fun changeCurrentSelection(id: String) {
+     //
+    //}
 
 
     var selectedItinerary: Itinerary? = null
 
-    fun addGasStation(gasStation: GasStation) {
-        gasStations.add(gasStation)
-    }
 
-    fun removeGasStation(gasStation: GasStation) {
-        gasStations.remove(gasStation)
-    }
+
+
 
     fun sortGasStationsByPrice() {
         //gasStations.sortBy { it.pricePerGallon }
     }
 
-    fun getGasStations(): List<GasStation> {
-        return gasStations
-    }
+
 
   //  fun searchGasStations(searchTerm: String): List<GasStation> {
        // return gasStations.filter { it.services.contains(searchTerm) }
    // }
 
-    fun getGasStationsAlongItinerary(): List<GasStation> {
-        val itinerary = selectedItinerary ?: return emptyList()
-        //return gasStations.filter { it.location in itinerary }
-        return emptyList()
-    }
 
 
 }
