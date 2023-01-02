@@ -15,9 +15,9 @@ class GasStationController(val model: IGasStationModel) {
     }
 
 
-   // fun selectedStation(id: String) {
-     //   model.changeCurrentSelection(id)
-    //}
+   fun selectedStation(id: String) {
+       model.changeCurrentSelection(id)
+    }
 
     fun registerViewToGasData(v: IGasStationView) {
         if (!this.views.contains(v)) {

@@ -22,13 +22,13 @@ class GasStationModel: IGasStationModel {
 
     private var gasStations = listOf<Record>()
 
-    private var selectedStation:GasStation? by Delegates.observable(null) {
+    private var selectedStation:Record? by Delegates.observable(null) {
             _, oldValue, newValue ->
         logger.info("update selectedStation $newValue")
         pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, oldValue, newValue)
     }
 
-/*    override fun changeCurrentSelection(Id: Long) {
+ override fun changeCurrentSelection(Id: String) {
         if (gasStations.isEmpty()) {
             "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&rows=10&facet=id&facet=cp&facet=pop&facet=adresse&facet=ville&facet=geom&facet=prix_id&facet=prix_valeur&facet=prix_nom&facet=services_service".httpGet()
                 .responseObject(GasStation.Deserializer()) { request, response, result ->
@@ -36,21 +36,18 @@ class GasStationModel: IGasStationModel {
                     result.let { (data, error) ->
                         gasStations = data?.records ?: listOf()
                         selectedStation = gasStations.find {
-                            it.fields.id == Id
+                           it.fields.id == Id
                         }
 
                     }
                 }
         } else {
-            selectedStation = stationDescriptionList.find {
-                it.station_id == id
+            selectedStation = gasStations.find {
+                it.fields.id == Id
             }
-            stationInformation?.let {
-                proximityStations = findProximityStation(0.5f, id, it.data.stations)
-            } ?: logger.warn("pb bc stationInformation is null")
-            mapImage =generateMap(id,proximityStations)
+
         }
-    }*/
+    }
 
     override fun register(datatype: String?, listener: PropertyChangeListener) {
         if(datatype == null) {
@@ -74,9 +71,6 @@ class GasStationModel: IGasStationModel {
 
     }
 
-   // override fun changeCurrentSelection(id: String) {
-     //
-    //}
 
 
     var selectedItinerary: Itinerary? = null
