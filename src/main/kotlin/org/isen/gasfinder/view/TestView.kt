@@ -62,12 +62,12 @@ class TestView(val controller: GasStationController):IGasStationView {
     }
 
     override fun propertyChange(evt: PropertyChangeEvent) {
-        if (evt.newValue is GasStation) {
-            (evt.newValue as GasStation).let {
-                if (it.records.isNotEmpty()) {
-                    /*  val firstStation = it.records[0]
-                      logger.info("first station is $firstStation")*/
-                    myText.text = "(${it.records[0].fields.id}) - ${it.records[0].fields.ville}"
+        println("Property change")
+        if (evt.newValue is List<*>) {
+            (evt.newValue as List<GasStation>).let {
+                if (it[0] != null) {
+                    logger.info("first station id : ${it[0].id}")
+                    myText.text = "(${it[0].id}) ${it[0].geoPoint.city}"
                 } else {
                     logger.warn("unknown information")
                 }
