@@ -16,4 +16,5 @@ interface IGasStationModel {
     fun unregister(listener:PropertyChangeListener)
     fun findGasStationInformation(source : DataSources)
     fun changeCurrentSelection(id:String?)
+    fun searchGasStations(searchTerm: String)
 }

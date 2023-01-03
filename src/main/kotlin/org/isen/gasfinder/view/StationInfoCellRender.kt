@@ -26,7 +26,7 @@ class StationInfoCellRender:JLabel(), ListCellRenderer<GasStation> {
     ): Component {
         val component = this
         if (value is GasStation) {
-            text = "${value.geoPoint.address}\n${value.geoPoint.city}"
+            text = "${value.geoPoint.address} - ${value.geoPoint.city}"
             icon = img
         }
         return component

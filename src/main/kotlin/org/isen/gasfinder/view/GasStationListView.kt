@@ -60,13 +60,15 @@ class GasStationListView (val controller: GasStationController):IGasStationView,
     }
 
     override fun propertyChange(evt: PropertyChangeEvent) {
-        if (evt.newValue is List<*>){
-            logger.info("receive GasStationInformation data")
-            val list = evt.newValue as List<GasStation>
-            val model = DefaultListModel<GasStation>()
-            list.forEach { model.addElement(it) }
-            gasStationList.model = model
-            gasStationList.cellRenderer = StationInfoCellRender()
+        if(evt.oldValue is String){
+            if(evt.oldValue == "searchResultGasStations"){
+                logger.info("Received searchResultGasStations")
+                val list = evt.newValue as List<GasStation>
+                val model = DefaultListModel<GasStation>()
+                list.forEach { model.addElement(it) }
+                gasStationList.model = model
+                gasStationList.cellRenderer = StationInfoCellRender()
+            }
         }
     }
 

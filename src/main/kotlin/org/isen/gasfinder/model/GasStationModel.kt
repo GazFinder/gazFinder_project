@@ -13,7 +13,11 @@ class GasStationModel: IGasStationModel {
     private val pcs = PropertyChangeSupport(this)
 
     private var gasStations: List<GasStation> by Delegates.observable(emptyList()) { _, _, _ ->
-        pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, null, gasStations)
+        pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, "gasStationList", gasStations)
+    }
+
+    private var searchResultGasStations: List<GasStation> by Delegates.observable(emptyList()) { _, _, _ ->
+        pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, "searchResultGasStations", searchResultGasStations)
     }
 
     private var selectedStation:GasStation? by Delegates.observable(null) {
@@ -62,7 +66,8 @@ class GasStationModel: IGasStationModel {
         //gasStations.sortBy { it.pricePerGallon }
     }
 
-  //  fun searchGasStations(searchTerm: String): List<GasStation> {
-       // return gasStations.filter { it.services.contains(searchTerm) }
-   // }
+  override fun searchGasStations(searchTerm: String) {
+      searchResultGasStations = gasStations
+      //TODO: implement search
+   }
 }

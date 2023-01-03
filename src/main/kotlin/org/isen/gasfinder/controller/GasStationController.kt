@@ -46,10 +46,8 @@ class GasStationController(val model: IGasStationModel) {
     }
 
 
-    fun handleSearch() {
-        // val searchTerm = searchInputView.getSearchTermFromUser()
-        //mapView.displaySearchResultsOnMap(searchTerm)
-        //listView.displaySearchResultsInList(searchTerm)
+    fun handleSearch(String: String) {
+        this.model.searchGasStations(String)
     }
 
     fun handleSortByPrice() {

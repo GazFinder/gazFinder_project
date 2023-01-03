@@ -20,5 +20,5 @@ fun main() {
 
     controller.displayViews()
     controller.loadGasStationInformation()
-
+    controller.handleSearch("Toulon")
 }
