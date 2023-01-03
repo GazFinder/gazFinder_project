@@ -4,8 +4,6 @@ import org.isen.gasfinder.controller.GasStationController
 import org.isen.gasfinder.model.GasStationModel
 import org.isen.gasfinder.model.IGasStationModel
 import org.isen.gasfinder.view.GasStationListView
-//import org.isen.gasfinder.view.GasStationListView
-import org.isen.gasfinder.view.TestView
 
 
 class App {
