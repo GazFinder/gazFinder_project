@@ -20,5 +20,5 @@ fun main() {
     val listView = GasStationListView(controller)
 
     controller.displayViews()
-    controller.handleSearch(SearchParameters("Toulon SP95", null, null, null, null))
+    controller.handleSearch(SearchParameters("Toulon", null, null, null, null))
 }

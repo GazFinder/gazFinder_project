@@ -1,6 +1,7 @@
 package org.isen.gasfinder.view
 
 import org.isen.gasfinder.model.GasStation
+import java.awt.Color
 import java.awt.Component
 import javax.swing.JLabel
 import javax.swing.JList
@@ -24,6 +25,13 @@ class StationInfoCellRender:JLabel(), ListCellRenderer<GasStation> {
         isSelected: Boolean,
         cellHasFocus: Boolean
     ): Component {
+        if(isSelected) {
+            background = Color.ORANGE
+            foreground = list?.foreground
+        } else {
+            background = list?.background
+            foreground = list?.foreground
+        }
         val component = this
         if (value is GasStation) {
             text = value.getSearchableString()
