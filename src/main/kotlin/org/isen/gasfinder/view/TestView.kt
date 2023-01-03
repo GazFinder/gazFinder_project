@@ -69,7 +69,7 @@ class TestView(val controller: GasStationController):IGasStationView {
                     logger.info("first station id : ${it[0].id}")
                     myText.text = "(${it[0].id}) ${it[0].geoPoint.city}"
                 } else {
-                    logger.warn("unknown information")
+                    logger.warn("No station found")
                 }
             }
         }
