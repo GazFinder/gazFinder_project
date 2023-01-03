@@ -68,6 +68,7 @@ class GasStationListView (val controller: GasStationController):IGasStationView,
             gasStationList.model = model
             gasStationList.cellRenderer = StationInfoCellRender()
         }
+    }
 
 
     override fun actionPerformed(e: ActionEvent) {

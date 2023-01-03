@@ -18,9 +18,8 @@ class App {
 fun main() {
     val model: IGasStationModel= GasStationModel()
     val controller = GasStationController(model)
+    val listView = GasStationListView(controller)
 
-    val testView = TestView(controller)
-    val velibInfoView = GasStationListView(controller)
     controller.displayViews()
     controller.loadGasStationInformation()
 
