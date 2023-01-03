@@ -1,6 +1,5 @@
 package org.isen.gasfinder.model
 
-import com.github.kittinunf.fuel.httpGet
 import org.apache.logging.log4j.kotlin.Logging
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
@@ -11,42 +10,21 @@ class GasStationModel: IGasStationModel {
 
     companion object : Logging
 
-    private  val pcs = PropertyChangeSupport(this)
+    private val pcs = PropertyChangeSupport(this)
 
-
-    private var gasStationInformation: GasStation? by Delegates.observable(null) {
-        _, oldValue, newValue ->
-        logger.info("gasStationInformation updated")
-        pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, oldValue, newValue)
+    private var gasStations: List<GasStation> by Delegates.observable(emptyList()) { _, _, _ ->
+        pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, null, gasStations)
     }
 
-    private var gasStations = listOf<Record>()
-
-    private var selectedStation:Record? by Delegates.observable(null) {
+    private var selectedStation:GasStation? by Delegates.observable(null) {
             _, oldValue, newValue ->
         logger.info("update selectedStation $newValue")
         pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION, oldValue, newValue)
     }
 
- override fun changeCurrentSelection(Id: String) {
-        if (gasStations.isEmpty()) {
-            "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&rows=10&facet=id&facet=cp&facet=pop&facet=adresse&facet=ville&facet=geom&facet=prix_id&facet=prix_valeur&facet=prix_nom&facet=services_service".httpGet()
-                .responseObject(GasStation.Deserializer()) { request, response, result ->
-                    logger.info("StatusCode : ${response.statusCode}")
-                    result.let { (data, error) ->
-                        gasStations = data?.records ?: listOf()
-                        selectedStation = gasStations.find {
-                           it.fields.id == Id
-                        }
-
-                    }
-                }
-        } else {
-            selectedStation = gasStations.find {
-                it.fields.id == Id
-            }
-
-        }
+    override fun changeCurrentSelection(id: String?) {
+        logger.info("changeCurrentSelection $id")
+        selectedStation = gasStations.find { it.id == id }
     }
 
     override fun register(datatype: String?, listener: PropertyChangeListener) {
@@ -62,33 +40,29 @@ class GasStationModel: IGasStationModel {
     override fun unregister(listener: PropertyChangeListener) {
     }
 
-    override fun findGasStationInformation() {
-        "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&rows=10&facet=id&facet=cp&facet=pop&facet=adresse&facet=ville&facet=geom&facet=prix_id&facet=prix_valeur&facet=prix_nom&facet=services_service"
-                .httpGet().responseObject(GasStation.Deserializer()) { request, response, result ->
-                    logger.info("StatusCode: ${response.statusCode}")
-                    result.let { (data,error) -> gasStationInformation = data }
-                }
-
+    override fun findGasStationInformation(source: IGasStationModel.DataSources) {
+        logger.info("findGasStationInformation")
+        when(source){
+            IGasStationModel.DataSources.DATAECO -> {
+                gasStations = parseGasStationJSON(source.url)
+                println(gasStations.joinToString("\n"))
+            }
+            IGasStationModel.DataSources.PRIXCARBURANT -> {
+            }
+        }
     }
 
-
+   // override fun changeCurrentSelection(id: String) {
+     //
+    //}
 
     var selectedItinerary: Itinerary? = null
-
-
-
-
 
     fun sortGasStationsByPrice() {
         //gasStations.sortBy { it.pricePerGallon }
     }
 
-
-
   //  fun searchGasStations(searchTerm: String): List<GasStation> {
        // return gasStations.filter { it.services.contains(searchTerm) }
    // }
-
-
-
 }
