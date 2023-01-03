@@ -1,5 +1,7 @@
 package org.isen.gasfinder.model
 
+import kotlin.properties.Delegates
+
 class GasStation(
     val geoPoint: GeoPoint,
     val name: String? = null,
@@ -14,12 +16,45 @@ class GasStation(
         return "GasStation(geoPoint=$geoPoint, name=$name, gas=$gas, services=$services, isOnHighway=$isOnHighway, id=$id, distance=$distance)"
     }
 
-    class Gas(val id: String, val name: String, val price: Double) {
+    class Gas() {
+        var price by Delegates.notNull<Double>()
+        lateinit var type : GasType
+        constructor(id: String, price: Double) : this() {
+            this.price = price
+            type = getGasTypeFromString(id)
+        }
         override fun toString(): String {
-            return "$name, $price"
+            return type.name + " : " + price
+        }
+
+        enum class GasType(val id: String){
+            GAZOLE("1"),
+            SP95("2"),
+            E85("3"),
+            GPLC("4"),
+            E10("5"),
+            SP98("6")
+        }
+
+        fun getGasTypeFromString(id: String): GasType {
+            return when(id) {
+                "1" -> GasType.GAZOLE
+                "2" -> GasType.SP95
+                "3" -> GasType.E85
+                "4" -> GasType.GPLC
+                "5" -> GasType.E10
+                "6" -> GasType.SP98
+                else -> throw IllegalArgumentException("Unknown gas type")
+            }
         }
     }
 
+    fun getSearchableString(): String {
+        var searchableString = ""
+        for(gas in gas) searchableString += gas.type.name + " "
+        for(service in services) searchableString += service.value + " "
+        return searchableString + " $geoPoint " + if(isOnHighway) " Autoroute" else " Route"
+    }
 
     enum class Service(val value: String) {
         SELL_GAS( "Vente de gaz domestique (Butane, Propane)"),

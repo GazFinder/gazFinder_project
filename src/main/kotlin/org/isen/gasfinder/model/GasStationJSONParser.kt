@@ -38,18 +38,19 @@ fun parseGasStationJSON(url: String): List<GasStation> {
         throw error!!
     }
     val gasStationList = data?.records?.groupBy { it.fields.id }?.map { (id, records) ->
+
+        //Detection of bad data
+        if(records.size == 1 && records[0].fields.prix_id == null) {
+            logger("parseGasStationJSON").warn("No data for gas station $id")
+            return@map null
+        }
         //We regroup all the gas by type
         val gasList = records.map { record ->
-            if(record.fields.prix_id != null) {
-                GasStation.Gas(record.fields.prix_id, record.fields.prix_nom, record.fields.prix_valeur)
-            } else {
-                null
-            }
-        }.filterNotNull()
+            GasStation.Gas(record.fields.prix_id, record.fields.prix_valeur)
+        }
 
         //We regroup all the services by type enum
         var servicesList : List<GasStation.Service> = emptyList()
-        println(records[0].fields.services_service)
         if(records[0].fields.services_service != null && records[0].fields.services_service.isNotEmpty()){
             val servicesListString = records[0].fields.services_service.split("//")
             servicesList = servicesListString.map { serviceStr -> GasStation.getServiceFromString(serviceStr) }
@@ -60,6 +61,6 @@ fun parseGasStationJSON(url: String): List<GasStation> {
         val isOnHighway = records[0].fields.pop == "A"
         //We create the gas station
         GasStation(geoPoint, null, gasList, servicesList, isOnHighway, records[0].fields.id)
-    }
+    }?.filterNotNull()
     return gasStationList ?: emptyList()
 }

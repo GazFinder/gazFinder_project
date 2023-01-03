@@ -3,16 +3,13 @@ package org.isen.gasfinder.controller
 
 
 import org.isen.gasfinder.model.IGasStationModel
+import org.isen.gasfinder.model.SearchParameters
 import org.isen.gasfinder.view.IGasStationView
 
 class GasStationController(val model: IGasStationModel) {
 
     val views = mutableListOf<IGasStationView>()
     var source: IGasStationModel.DataSources = IGasStationModel.DataSources.DATAECO
-
-    fun loadGasStationInformation() {
-        this.model.findGasStationInformation(source)
-    }
 
     fun selectedStation(id: String?) {
         model.changeCurrentSelection(id)
@@ -46,8 +43,8 @@ class GasStationController(val model: IGasStationModel) {
     }
 
 
-    fun handleSearch(String: String) {
-        this.model.searchGasStations(String)
+    fun handleSearch(searchParameters : SearchParameters? = null) {
+        this.model.searchGasStations(searchParameters, source)
     }
 
     fun handleSortByPrice() {

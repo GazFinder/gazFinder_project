@@ -3,6 +3,7 @@ package org.isen.gasfinder
 import org.isen.gasfinder.controller.GasStationController
 import org.isen.gasfinder.model.GasStationModel
 import org.isen.gasfinder.model.IGasStationModel
+import org.isen.gasfinder.model.SearchParameters
 import org.isen.gasfinder.view.GasStationListView
 
 
@@ -19,6 +20,5 @@ fun main() {
     val listView = GasStationListView(controller)
 
     controller.displayViews()
-    controller.loadGasStationInformation()
-    controller.handleSearch("Toulon")
+    controller.handleSearch(SearchParameters("Toulon SP95", null, null, null, null))
 }

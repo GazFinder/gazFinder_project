@@ -47,7 +47,7 @@ class TestView(val controller: GasStationController):IGasStationView {
         val mybutton = JButton("get Data")
         mybutton.addActionListener() {
             logger.debug("call controller")
-            controller.loadGasStationInformation()
+            controller.handleSearch()
         }
         result.add(mybutton, BorderLayout.EAST)
         result.add(JLabel("Station :"), BorderLayout.WEST)

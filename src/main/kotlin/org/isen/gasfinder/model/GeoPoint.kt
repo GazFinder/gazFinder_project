@@ -9,6 +9,6 @@ class GeoPoint(
 ) {
 
     override fun toString(): String {
-        return "GeoPoint(latitude=$latitude, longitude=$longitude, address=$address, city=$city, postalCode=$postalCode)"
+        return "$address $postalCode $city"
     }
 }
