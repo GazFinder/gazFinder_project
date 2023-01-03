@@ -8,15 +8,14 @@ import org.isen.gasfinder.view.IGasStationView
 class GasStationController(val model: IGasStationModel) {
 
     val views = mutableListOf<IGasStationView>()
-
+    var source: IGasStationModel.DataSources = IGasStationModel.DataSources.DATAECO
 
     fun loadGasStationInformation() {
-        this.model.findGasStationInformation()
+        this.model.findGasStationInformation(source)
     }
 
-
-   fun selectedStation(id: String) {
-       model.changeCurrentSelection(id)
+    fun selectedStation(id: String?) {
+        model.changeCurrentSelection(id)
     }
 
     fun registerViewToGasData(v: IGasStationView) {
