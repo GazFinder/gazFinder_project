@@ -52,7 +52,7 @@ class GasStationMapView(val controller: GasStationController) : IGasStationView,
         frame.isVisible = false
     }
 
-    override fun propertyChange(evt: PropertyChangeEvent?) {
+    override fun propertyChange(evt: PropertyChangeEvent) {
         logger.debug("property change")
         if (evt?.propertyName == IGasStationModel.DATATYPE_STATIONS) {
             val gasStationList = evt.newValue as List<GasStation>
@@ -77,21 +77,6 @@ class GasStationMapView(val controller: GasStationController) : IGasStationView,
         label_image.icon = ImageIcon(Image)
         label_image.repaint()*/
     }
-
-    override fun propertyChange(evt: PropertyChangeEvent) {
-        if (evt.newValue is Image) {
-
-            logger.info("receive Image data")
-            if (evt?.propertyName == IGasStationModel.DATATYPE_STATION_SELECTED) {
-                label_image.icon = ImageIcon(evt.newValue as Image)
-                label_image.repaint()
-            } else {
-                logger.info("unknown data")
-            }
-        }
-    }
-
-
 
     override fun actionPerformed(p0: ActionEvent?) {
         //TODO("Not yet implemented")
