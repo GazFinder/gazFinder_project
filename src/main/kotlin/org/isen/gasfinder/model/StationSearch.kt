@@ -36,9 +36,9 @@ class StationSearch (val search: SearchParameters){
             var isWordAGasType = false
 
             stations?.forEach { station ->
-                if(station.geoPoint.city == it) isWordACity = true
-                if(station.geoPoint.address == it) isWordAnAddress = true
-                if(station.geoPoint.postalCode == it) isWordAPostalCode = true
+                if(station.geoPoint.city.equals(it, true)) isWordACity = true
+                if(station.geoPoint.address.equals(it, true)) isWordAnAddress = true
+                if(station.geoPoint.postalCode.equals(it, true)) isWordAPostalCode = true
                 if(GasStation.getServiceFromString(it) != GasStation.Service.UNKNOWN) isWordAService = true
                 if(GasStation.Gas.GasType.values().any { gasType -> gasType.name == it }) isWordAGasType = true
             }
@@ -81,9 +81,11 @@ class StationSearch (val search: SearchParameters){
         }
 
         //remove stations if there is more than 100, based on the proximity to the search
-        if((stations?.size ?: 0) > 25) {
+
+
+        if((stations?.size ?: 0) > 50) {
             stations = stations?.sortedBy { it.distance }
-            stations = stations?.subList(0, 25)
+            stations = stations?.subList(0, 50)
         }
 
         println("After filtering, ${stations?.size} stations found")
