@@ -20,6 +20,7 @@ class StationSearch (val search: SearchParameters){
                 stations = parseGasStationJSON(source.urlStart + search.searchStr + source.urlEnd)
             }
             IGasStationModel.DataSources.PRIXCARBURANT -> {
+                stations = parseGasStationXML(source.urlStart)
             }
         }
 
