@@ -4,17 +4,15 @@ package org.isen.gasfinder.view
 
 import org.apache.logging.log4j.kotlin.Logging
 import org.isen.gasfinder.controller.GasStationController
-import org.isen.gasfinder.model.CartoHelper
 import org.isen.gasfinder.model.GasStation
 import org.isen.gasfinder.model.GeoPoint
 import org.isen.gasfinder.model.IGasStationModel
+import org.isen.gasfinder.view.map.StationsMap
 import java.awt.BorderLayout
-import java.awt.Dimension
 import java.awt.Image
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.beans.PropertyChangeEvent
-import java.lang.IllegalStateException
 import javax.swing.*
 
 class GasStationMapView(val controller: GasStationController) : IGasStationView, ActionListener{
@@ -22,20 +20,22 @@ class GasStationMapView(val controller: GasStationController) : IGasStationView,
 
     private val frame: JFrame
     private var label_image = JLabel("No Data Available", JLabel.CENTER)
+    private var image : Image? = null
     private var stationPoints : List<GeoPoint>? = null
-
+    private var stationsMap : StationsMap? = null
     init {
         controller.registerViewToCartoData(this)
+        stationsMap = StationsMap()
+        stationsMap!!.registerToMapUpdate(this)
+
         frame = JFrame("GasStationMapView").apply {
             isVisible = false
             contentPane = makeGUI()
             defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-            extendedState = JFrame.MAXIMIZED_BOTH;
+            extendedState = JFrame.MAXIMIZED_BOTH
             this.pack()
         }
-
     }
-
 
     private fun makeGUI(): JPanel {
         val result = JPanel()
@@ -54,28 +54,18 @@ class GasStationMapView(val controller: GasStationController) : IGasStationView,
 
     override fun propertyChange(evt: PropertyChangeEvent) {
         logger.debug("property change")
-        if (evt?.propertyName == IGasStationModel.DATATYPE_STATIONS) {
+        if (evt.propertyName == IGasStationModel.DATATYPE_STATIONS) {
             val gasStationList = evt.newValue as List<GasStation>
             stationPoints = gasStationList.map { gasStation -> gasStation.geoPoint }
+            stationsMap?.setSize(frame.width, frame.height)
+            stationsMap?.clearStations()
+            stationsMap?.addStations(stationPoints!!.map { geoPoint -> Triple(geoPoint.latitude, geoPoint.longitude, geoPoint.address!!) })
         }
-    }
-
-    fun generateMap() {
-
-
-        /*
-        return if(current != null) {
-            val cartoHelper = CartoHelper(Pair(2.348496,48.853495), 11.9461, sizeCartoImage)
-            cartoHelper.generate(
-                Pair(current.geoPoint.longitude, current.geoPoint.latitude),
-                proximity
-            )
-        } else {
-            throw IllegalStateException("Current Station is null")
+        if(evt.propertyName == "Image" && evt.newValue != null){
+            image = evt.newValue as Image
+            label_image.icon = ImageIcon(image)
+            label_image.repaint()
         }
-
-        label_image.icon = ImageIcon(Image)
-        label_image.repaint()*/
     }
 
     override fun actionPerformed(p0: ActionEvent?) {
