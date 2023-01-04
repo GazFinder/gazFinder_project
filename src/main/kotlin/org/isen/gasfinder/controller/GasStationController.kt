@@ -11,21 +11,21 @@ class GasStationController(val model: IGasStationModel) {
     val views = mutableListOf<IGasStationView>()
     var source: IGasStationModel.DataSources = IGasStationModel.DataSources.DATAECO
 
-    fun selectedStation(id: String?) {
+    fun handleStationSelection(id: String?) {
         model.changeCurrentSelection(id)
     }
 
     fun registerViewToGasData(v: IGasStationView) {
         if (!this.views.contains(v)) {
             this.views.add(v)
-            this.model.register(IGasStationModel.DATATYPE_STATION, v)
+            this.model.register(null, v)
         }
     }
 
     fun registerViewToCartoData(v: IGasStationView) {
         if (!this.views.contains(v)) {
             this.views.add(v)
-            this.model.register(IGasStationModel.DATATYPE_CARTO, v)
+            this.model.register(null, v)
         }
     }
 
@@ -42,6 +42,10 @@ class GasStationController(val model: IGasStationModel) {
         }
     }
 
+    fun handleOpenSearch() {
+        // TODO : open search view
+        println("handleOpenSearch")
+    }
 
     fun handleSearch(searchParameters : SearchParameters? = null) {
         this.model.searchGasStations(searchParameters, source)
