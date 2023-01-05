@@ -75,7 +75,7 @@ fun parseGasStationXML(url: String): MutableList<GasStation>{
             }
 
             if (qName.equals("pdv")){
-                val point = GeoPoint(latitude.toDouble(),longitude.toDouble(),adresse.toString(),ville.toString(),cp)
+                val point = GeoPoint(latitude.toDouble()/100000,longitude.toDouble()/100000,adresse.toString(),ville.toString(),cp)
                 isOnHighway = pop == "A"
                 if (id != null){
                     val station = GasStation(point,null,gasList,servicesList, isOnHighway!!, id!!)
