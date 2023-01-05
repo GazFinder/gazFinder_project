@@ -79,7 +79,6 @@ fun parseGasStationXML(url: String): MutableList<GasStation>{
                 isOnHighway = pop == "A"
                 if (id != null){
                     val station = GasStation(point,null,gasList,servicesList, isOnHighway!!, id!!)
-                    println(station)
                     list.add(station)
                     servicesList = mutableListOf()
                     gasList = mutableListOf()

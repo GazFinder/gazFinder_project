@@ -15,20 +15,17 @@ class GasStationController(val model: IGasStationModel) {
         model.changeCurrentSelection(id)
     }
 
-    fun registerViewToGasData(v: IGasStationView) {
+    fun registerView(v: IGasStationView,datatypes: List<String>?) {
         if (!this.views.contains(v)) {
             this.views.add(v)
-            this.model.register(null, v)
+            if (datatypes == null){
+                this.model.register(null, v)
+            }
+            else for (datatype in datatypes){
+                this.model.register(datatype,v)
+            }
         }
     }
-
-    fun registerViewToCartoData(v: IGasStationView) {
-        if (!this.views.contains(v)) {
-            this.views.add(v)
-            this.model.register(null, v)
-        }
-    }
-
 
     fun displayViews() {
         views.forEach() {

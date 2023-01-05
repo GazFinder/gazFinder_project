@@ -6,6 +6,7 @@ package org.isen.gasfinder.view
 import org.apache.logging.log4j.kotlin.Logging
 import org.isen.gasfinder.controller.GasStationController
 import org.isen.gasfinder.model.GasStation
+import org.isen.gasfinder.model.GasStationModel
 import org.isen.gasfinder.model.IGasStationModel
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -19,7 +20,7 @@ class GasStationListView (val controller: GasStationController):IGasStationView,
 
     companion object : Logging
 
-    //We render the side bar with a big search button and a list of gas stations results with a scroll bar
+    //We render the side-bar with a big search button and a list of gas stations results with a scroll bar
     private val frame: JFrame
     private val searchButton = JButton("Search")
     private val gasStationList = JList<GasStation>()
@@ -28,7 +29,7 @@ class GasStationListView (val controller: GasStationController):IGasStationView,
     private val gasStationListScrollPane = JScrollPane(gasStationList)
 
     init {
-        controller.registerViewToGasData(this)
+        controller.registerView(this, listOf(IGasStationModel.DATATYPE_STATIONS,IGasStationModel.DATATYPE_STATION_SELECTED))
         frame = JFrame("GasStationListView").apply {
             isVisible = false
             contentPane = makeGUI()
