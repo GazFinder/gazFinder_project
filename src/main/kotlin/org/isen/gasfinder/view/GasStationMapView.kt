@@ -8,6 +8,7 @@ import org.isen.gasfinder.model.GasStation
 import org.isen.gasfinder.model.GeoPoint
 import org.isen.gasfinder.model.IGasStationModel
 import org.isen.gasfinder.view.map.StationsMap
+import org.isen.gasfinder.view.map.StationsMapPanel
 import java.awt.BorderLayout
 import java.awt.Image
 import java.awt.event.ActionEvent
@@ -15,16 +16,15 @@ import java.awt.event.ActionListener
 import java.beans.PropertyChangeEvent
 import javax.swing.*
 
-class GasStationMapView(val controller: GasStationController) : IGasStationView, ActionListener{
+class GasStationMapView(private val controller: GasStationController) : IGasStationView, ActionListener{
     companion object : Logging
-
     private val frame: JFrame
-    private var label_image = JLabel("No Data Available", JLabel.CENTER)
+    private val panel: StationsMapPanel = StationsMapPanel()
     private var image : Image? = null
     private var stationPoints : List<GeoPoint>? = null
     private var stationsMap : StationsMap? = null
     init {
-        controller.registerViewToCartoData(this)
+        controller.registerView(this, listOf(IGasStationModel.DATATYPE_STATIONS, IGasStationModel.DATATYPE_STATION_SELECTED))
         stationsMap = StationsMap()
         stationsMap!!.registerToMapUpdate(this)
 
@@ -40,7 +40,7 @@ class GasStationMapView(val controller: GasStationController) : IGasStationView,
     private fun makeGUI(): JPanel {
         val result = JPanel()
         result.layout = BorderLayout(20, 20)
-        result.add(label_image, BorderLayout.CENTER)
+        result.add(panel, BorderLayout.CENTER)
         return result
     }
 
@@ -56,15 +56,32 @@ class GasStationMapView(val controller: GasStationController) : IGasStationView,
         logger.debug("property change")
         if (evt.propertyName == IGasStationModel.DATATYPE_STATIONS) {
             val gasStationList = evt.newValue as List<GasStation>
-            stationPoints = gasStationList.map { gasStation -> gasStation.geoPoint }
-            stationsMap?.setSize(frame.width, frame.height)
-            stationsMap?.clearStations()
-            stationsMap?.addStations(stationPoints!!.map { geoPoint -> Triple(geoPoint.latitude, geoPoint.longitude, geoPoint.address!!) })
+            if(gasStationList.isNotEmpty()) {
+                Thread {
+                    stationPoints = gasStationList.map { gasStation -> gasStation.geoPoint }
+                    stationsMap?.setSize(frame.width, frame.height)
+                    stationsMap?.clearStations()
+                    stationsMap?.addStations(stationPoints!!.map { geoPoint ->
+                        Triple(
+                            geoPoint.latitude,
+                            geoPoint.longitude,
+                            geoPoint.address!!
+                        )
+                    })
+                }.start()
+            }
+            panel.setLoading(true)
+        }
+        if(evt.propertyName == IGasStationModel.DATATYPE_STATION_SELECTED){
+            Thread {
+                stationsMap?.setSize(frame.width, frame.height)
+                stationsMap?.setSelectedStation((evt.newValue as GasStation).geoPoint)
+            }.start()
         }
         if(evt.propertyName == "Image" && evt.newValue != null){
             image = evt.newValue as Image
-            label_image.icon = ImageIcon(image)
-            label_image.repaint()
+            panel.setStationsMap(image!!)
+            panel.setLoading(false)
         }
     }
 
