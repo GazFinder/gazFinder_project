@@ -61,7 +61,10 @@ class GasStationModel: IGasStationModel {
           if(search == null)
               throw IllegalArgumentException("searchParameters is null and no previous search was done")
       } else search = StationSearch(searchParameters)
-      search!!.executeSearch(this, source)
-      searchResultGasStations = search!!.stations!!
+      searchResultGasStations = listOf()
+      Thread {
+          search!!.executeSearch(this, source)
+          searchResultGasStations = search!!.stations!!
+      }.start()
    }
 }
