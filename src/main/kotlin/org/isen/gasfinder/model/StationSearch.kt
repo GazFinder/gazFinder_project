@@ -1,5 +1,6 @@
 package org.isen.gasfinder.model
 
+
 data class SearchParameters(
     val searchStr: String? = null,
     val maxDistance: Int? = null,
@@ -15,17 +16,26 @@ class StationSearch (val search: SearchParameters){
     fun executeSearch(gasStationModel: IGasStationModel, source: IGasStationModel.DataSources) {
         GasStationModel.logger.info("findGasStationInformation $source")
 
-        when(source){
-            IGasStationModel.DataSources.DATAECO -> {
-                stations = parseGasStationJSON(source.urlStart + search.searchStr + source.urlEnd)
-            }
-            IGasStationModel.DataSources.PRIXCARBURANT -> {
-                stations = parseGasStationXML(source.urlStart)
-            }
+        stations = when(source){
+            IGasStationModel.DataSources.DATAECO -> parseGasStationJSON(source.urlStart + search.searchStr + source.urlEnd)
+            IGasStationModel.DataSources.PRIXCARBURANT -> parseGasStationXML(source.urlStart)
         }
 
         GasStationModel.logger.info("findGasStationInformation $source done, ${stations?.size} stations found")
         println("findGasStationInformation $source done, ${stations?.size} stations found")
+
+        if(stations?.size == 0) {
+            val alternativeSource =
+                if (source == IGasStationModel.DataSources.DATAECO) IGasStationModel.DataSources.PRIXCARBURANT else IGasStationModel.DataSources.DATAECO
+            GasStationModel.logger.info("No station found, retrying with $alternativeSource")
+            println("No station found, retrying with $alternativeSource")
+            stations = when (alternativeSource) {
+                IGasStationModel.DataSources.DATAECO -> parseGasStationJSON(alternativeSource.urlStart + search.searchStr + alternativeSource.urlEnd)
+                IGasStationModel.DataSources.PRIXCARBURANT -> parseGasStationXML(alternativeSource.urlStart)
+            }
+            GasStationModel.logger.info("findGasStationInformation $alternativeSource done, ${stations?.size} stations found")
+            println("findGasStationInformation $alternativeSource done, ${stations?.size} stations found")
+        }
 
         val searchWords = search.searchStr?.split(" ")
         val searchWordsWithAttributes = searchWords?.map {
