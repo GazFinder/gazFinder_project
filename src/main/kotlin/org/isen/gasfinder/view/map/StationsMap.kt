@@ -38,12 +38,13 @@ class StationsMap {
         this.width = width
         this.height = height
     }
+
     fun clearStations() {
         stations.clear()
     }
 
-    fun setSelectedStation(station: GeoPoint) {
-        selected = Triple(station.latitude, station.longitude, station.address!!)
+    fun setSelectedStation(station: GeoPoint?) {
+        selected = station?.let { Triple(it.latitude, it.longitude, it.address!!) }
         generate()
     }
 
@@ -67,7 +68,7 @@ class StationsMap {
 
         // Calculating the zoom in order to include all the stations
         val maxDistance = stations.map { distance(it.second, it.first, centerOfMapX, centerOfMapY) }.max()
-        val zp = sqrt((height * height + width * width).toDouble()) * 0.002
+        val zp = sqrt((height * height + width * width).toDouble()) * 0.0022
         val zq = 1 - (maxDistance.pow(1/4.5) / 5.8.pow(1/4.5))
         val zoom = zp + (10 * zq)
 
