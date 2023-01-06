@@ -6,6 +6,7 @@ import org.isen.gasfinder.model.IGasStationModel
 import org.isen.gasfinder.model.SearchParameters
 import org.isen.gasfinder.view.GasStationListView
 import org.isen.gasfinder.view.GasStationMapView
+import org.isen.gasfinder.view.SearchView
 import java.lang.Thread.sleep
 
 fun main() {
@@ -13,6 +14,7 @@ fun main() {
     val controller = GasStationController(model)
     val listView = GasStationListView(controller)
     val mapView = GasStationMapView(controller)
+    val searchView = SearchView(controller)
 
     controller.displayViews()
     controller.handleSearch(SearchParameters("83", null, null, null, null))
