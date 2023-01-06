@@ -5,12 +5,14 @@ import org.isen.gasfinder.model.GasStationModel
 import org.isen.gasfinder.model.IGasStationModel
 import org.isen.gasfinder.model.SearchParameters
 import org.isen.gasfinder.view.GasStationMapView
+import org.isen.gasfinder.view.SearchView
 import java.lang.Thread.sleep
 
 fun main() {
     val model: IGasStationModel= GasStationModel()
     val controller = GasStationController(model)
     val mapView = GasStationMapView(controller)
+    val searchView = SearchView(controller)
 
     controller.displayViews()
     sleep(1000)
