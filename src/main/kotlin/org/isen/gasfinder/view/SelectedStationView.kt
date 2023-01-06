@@ -28,7 +28,7 @@ class SelectedStationView (private val controller: GasStationController, private
 
             defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
             this.title = title
-            this.preferredSize = Dimension(800, 450)
+            this.preferredSize = Dimension(800, 220)
             this.pack()
         }
     }
@@ -60,7 +60,7 @@ class SelectedStationView (private val controller: GasStationController, private
     private fun makeIconArea (): JPanel {
         val iconPanel: JPanel = JPanel()
         iconPanel.layout = BorderLayout()
-        iconPanel.preferredSize = Dimension(150, 380)
+        iconPanel.preferredSize = Dimension(150, 150)
 //        iconPanel.background = java.awt.Color(247,247,247)
 
         val icon = JLabel()
@@ -76,9 +76,8 @@ class SelectedStationView (private val controller: GasStationController, private
     private fun makeCenterArea (): JPanel {
         val centerPanel: JPanel = JPanel()
         centerPanel.layout = GridLayout(2, 1)
-        centerPanel.preferredSize = Dimension(650, 380)
+        centerPanel.preferredSize = Dimension(650, 150)
 //        centerPanel.background = java.awt.Color(247,247,247)
-        centerPanel.background = Color.GREEN
 
         centerPanel.add(makeAddressArea())
         centerPanel.add(makeBottomArea())
@@ -88,65 +87,19 @@ class SelectedStationView (private val controller: GasStationController, private
 
     private fun makeAddressArea (): JPanel {
         val addressInfoPanel: JPanel = JPanel()
-        val addressPanel: JPanel = JPanel()
-        val cityPanel: JPanel = JPanel()
-        val zipPanel: JPanel = JPanel()
-        val highWayPanel: JPanel = JPanel()
 
         // ADDRESS
-        addressPanel.layout = BorderLayout()
-
-        val address = JLabel(selectedGasStation.geoPoint.address)
-        address.font = address.font.deriveFont(15f)
-        address.verticalAlignment = JLabel.CENTER
-        address.horizontalAlignment = JLabel.LEADING
-
-        addressPanel.add(address)
-
-        // CITY
-        cityPanel.layout = BorderLayout()
-
-        val city = JLabel(selectedGasStation.geoPoint.city)
-        city.font = city.font.deriveFont(15f)
-        city.verticalAlignment = JLabel.CENTER
-        city.horizontalAlignment = JLabel.LEADING
-
-        cityPanel.add(city)
-
-        // ZIP CODE
-        zipPanel.layout = BorderLayout()
-
-        val zip = JLabel(selectedGasStation.geoPoint.postalCode)
-        zip.font = zip.font.deriveFont(15f)
-        zip.verticalAlignment = JLabel.CENTER
-        zip.horizontalAlignment = JLabel.LEADING
-
-        zipPanel.add(zip)
-
-        // HIGHWAY BOOLEAN
-        highWayPanel.layout = BorderLayout()
-
-        val highway = JLabel()
+        val address = JLabel()
+        address.text = "<HTML>${selectedGasStation.geoPoint.address}, ${selectedGasStation.geoPoint.postalCode} ${selectedGasStation.geoPoint.city}<br>Position: "
         if (selectedGasStation.isOnHighway) {
-            highway.text = "On highway"
+            address.text += "On highway</HTML>"
         } else {
-            highway.text = "Not on highway"
+            address.text += "Not on highway</HTML>"
         }
+        address.font = address.font.deriveFont(15f)
 
-        highway.font = highway.font.deriveFont(15f)
-        highway.verticalAlignment = JLabel.CENTER
-        highway.horizontalAlignment = JLabel.LEADING
-
-        highWayPanel.add(highway)
-
-        // ADDRESS INFO PANEL
-        addressInfoPanel.layout = GridLayout(2, 2)
-//        addressInfoPanel.background = Color.YELLOW
-
-        addressInfoPanel.add(addressPanel)
-        addressInfoPanel.add(cityPanel)
-        addressInfoPanel.add(zipPanel)
-        addressInfoPanel.add(highWayPanel)
+        addressInfoPanel.add(address)
+        addressInfoPanel.layout = FlowLayout()
 
         return addressInfoPanel
     }
@@ -156,7 +109,6 @@ class SelectedStationView (private val controller: GasStationController, private
         bottomPanel.layout = GridLayout(1, 2)
 //        bottomPanel.preferredSize = Dimension(550, 380)
 //        bottomPanel.background = java.awt.Color(247,247,247)
-        bottomPanel.background = Color.ORANGE
 
         bottomPanel.add(makeGasArea())
         bottomPanel.add(makeServicesArea())
@@ -187,7 +139,7 @@ class SelectedStationView (private val controller: GasStationController, private
 
         for (service in selectedGasStation.services) {
             val serviceLabel: JLabel = JLabel()
-            serviceLabel.text = service.name
+            serviceLabel.text = service.value
             serviceLabel.font = serviceLabel.font.deriveFont(15f)
             serviceLabel.verticalAlignment = JLabel.CENTER
             serviceLabel.horizontalAlignment = JLabel.LEADING
