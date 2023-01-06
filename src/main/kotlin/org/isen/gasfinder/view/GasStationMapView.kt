@@ -36,6 +36,7 @@ class GasStationMapView(controller: GasStationController) : IGasStationView, Act
             contentPane = makeGUI()
             defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
             extendedState = JFrame.MAXIMIZED_BOTH
+            minimumSize = Dimension(1000, 1200)
             this.pack()
         }
     }

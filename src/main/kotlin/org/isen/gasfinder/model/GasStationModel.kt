@@ -1,6 +1,7 @@
 package org.isen.gasfinder.model
 
 import org.apache.logging.log4j.kotlin.Logging
+import org.isen.gasfinder.view.SelectedStationView
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
 import kotlin.properties.Delegates
@@ -10,7 +11,7 @@ class GasStationModel: IGasStationModel {
     companion object : Logging
 
     private val pcs = PropertyChangeSupport(this)
-
+    private val selectedView : SelectedStationView? = null
     private var searchResultGasStations: List<GasStation> by Delegates.observable(emptyList()) { _, _, _ ->
         logger.info("update search result gas stations")
         pcs.firePropertyChange(IGasStationModel.DATATYPE_STATIONS, null, searchResultGasStations)
@@ -20,6 +21,10 @@ class GasStationModel: IGasStationModel {
             _, oldValue, newValue ->
         logger.info("update selectedStation")
         pcs.firePropertyChange(IGasStationModel.DATATYPE_STATION_SELECTED, oldValue, newValue)
+        if(newValue != null){
+            selectedView?.close()
+            SelectedStationView(newValue)
+        }
     }
 
     private var search: StationSearch? by Delegates.observable(null) { _, _, _ ->

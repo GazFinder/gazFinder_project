@@ -14,27 +14,26 @@ import java.awt.event.ActionListener
 import java.beans.PropertyChangeEvent
 import javax.swing.*
 
-class SelectedStationView (private val controller: GasStationController, private val station: GasStation):IGasStationView, ActionListener {
+class SelectedStationView (private val station: GasStation):IGasStationView, ActionListener {
     companion object : Logging
 
     private val frame: JFrame
     private var selectedGasStation: GasStation = station
 
     init {
-        controller.registerView(this, listOf(IGasStationModel.DATATYPE_STATIONS, IGasStationModel.DATATYPE_STATION_SELECTED))
         frame = JFrame("SelectedStationView").apply {
-            isVisible = false
+            isVisible = true
             makeGUI(this)
 
-            defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+            defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
             this.title = title
-            this.preferredSize = Dimension(800, 220)
+            this.preferredSize = Dimension(500, 600)
             this.pack()
         }
     }
 
     private fun makeGUI (frame: JFrame): JFrame {
-        frame.add(makeTitleArea(), BorderLayout.NORTH)
+        //frame.add(makeTitleArea(), BorderLayout.NORTH)
         frame.add(makeIconArea(), BorderLayout.WEST)
         frame.add(makeCenterArea(), BorderLayout.CENTER)
         
@@ -44,8 +43,8 @@ class SelectedStationView (private val controller: GasStationController, private
     private fun makeTitleArea (): JPanel {
         val titlePanel: JPanel = JPanel()
         titlePanel.layout = BorderLayout()
-        titlePanel.preferredSize = Dimension(800, 70)
-//        titlePanel.background = java.awt.Color(247,247,247)
+        //titlePanel.preferredSize = Dimension(800, 70)
+        titlePanel.background = Color.WHITE
 
         val title = JLabel("Station Information")
         title.font = title.font.deriveFont(30f)
@@ -60,7 +59,8 @@ class SelectedStationView (private val controller: GasStationController, private
     private fun makeIconArea (): JPanel {
         val iconPanel: JPanel = JPanel()
         iconPanel.layout = BorderLayout()
-        iconPanel.preferredSize = Dimension(150, 150)
+        //iconPanel.preferredSize = Dimension(150, 150)
+        iconPanel.background = Color.WHITE
 //        iconPanel.background = java.awt.Color(247,247,247)
 
         val icon = JLabel()
@@ -75,26 +75,30 @@ class SelectedStationView (private val controller: GasStationController, private
     
     private fun makeCenterArea (): JPanel {
         val centerPanel: JPanel = JPanel()
-        centerPanel.layout = GridLayout(2, 1)
-        centerPanel.preferredSize = Dimension(650, 150)
+        centerPanel.layout = GridLayout(3, 1)
+        //centerPanel.preferredSize = Dimension(650, 150)
+        centerPanel.background = Color.WHITE
 //        centerPanel.background = java.awt.Color(247,247,247)
 
         centerPanel.add(makeAddressArea())
-        centerPanel.add(makeBottomArea())
+        centerPanel.add(makeGasArea())
+        centerPanel.add(makeServicesArea())
 
         return centerPanel
     }
 
     private fun makeAddressArea (): JPanel {
         val addressInfoPanel: JPanel = JPanel()
-
+        addressInfoPanel.background = Color.WHITE
         // ADDRESS
         val address = JLabel()
-        address.text = "<HTML>${selectedGasStation.geoPoint.address}, ${selectedGasStation.geoPoint.postalCode} ${selectedGasStation.geoPoint.city}<br>Position: "
+        address.border = BorderFactory.createTitledBorder("Address")
+        address.background = Color.WHITE
+        address.text = "<HTML><h3>${selectedGasStation.geoPoint.address}</h3> <p>${selectedGasStation.geoPoint.postalCode} ${selectedGasStation.geoPoint.city}</p><br>"
         if (selectedGasStation.isOnHighway) {
             address.text += "On highway</HTML>"
         } else {
-            address.text += "Not on highway</HTML>"
+            address.text += "</HTML>"
         }
         address.font = address.font.deriveFont(15f)
 
@@ -107,9 +111,8 @@ class SelectedStationView (private val controller: GasStationController, private
     private fun makeBottomArea (): JPanel {
         val bottomPanel: JPanel = JPanel()
         bottomPanel.layout = GridLayout(1, 2)
-//        bottomPanel.preferredSize = Dimension(550, 380)
-//        bottomPanel.background = java.awt.Color(247,247,247)
-
+        bottomPanel.background = Color.WHITE
+        bottomPanel.border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
         bottomPanel.add(makeGasArea())
         bottomPanel.add(makeServicesArea())
 
@@ -118,8 +121,9 @@ class SelectedStationView (private val controller: GasStationController, private
 
     private fun makeGasArea (): JPanel {
         val gasPanel: JPanel = JPanel()
-        gasPanel.layout = FlowLayout()
-
+        gasPanel.layout = GridLayout(selectedGasStation.gas.size, 1)
+        gasPanel.border = BorderFactory.createTitledBorder("Gas")
+        gasPanel.background = Color.WHITE
         for (gas in selectedGasStation.gas) {
             val gasLabel: JLabel = JLabel()
             gasLabel.text = "${gas.type} : ${gas.price}€"
@@ -135,8 +139,9 @@ class SelectedStationView (private val controller: GasStationController, private
 
     private fun makeServicesArea (): JPanel {
         val servicesPanel: JPanel = JPanel()
-        servicesPanel.layout = FlowLayout()
-
+        servicesPanel.layout = GridLayout(selectedGasStation.services.size, 1)
+        servicesPanel.border = BorderFactory.createTitledBorder("Services")
+        servicesPanel.background = Color.WHITE
         for (service in selectedGasStation.services) {
             val serviceLabel: JLabel = JLabel()
             serviceLabel.text = service.value
@@ -159,7 +164,7 @@ class SelectedStationView (private val controller: GasStationController, private
     }
 
     override fun propertyChange(evt: PropertyChangeEvent?) {
-//        selectedGasStation = evt?.newValue as GasStation
+        this.close()
     }
 
     override fun actionPerformed(e: ActionEvent?) {

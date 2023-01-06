@@ -5,22 +5,35 @@ import org.isen.gasfinder.model.parser.parseGasStationXML
 
 
 data class SearchParameters(
-    val searchStr: String? = null,
+    var searchStr: String? = null,
     val maxDistance: Int? = null,
-    val services: List<GasStation.Service>? = null,
-    val gas: GasStation.Gas.GasType? = null,
-    val maxGasPrice: Double? = null,
+    var services: MutableList<GasStation.Service>? = null,
+    var gas: GasStation.Gas.GasType? = null,
+    var maxGasPrice: Double? = null,
 )
 
-class StationSearch (private val search: SearchParameters){
+class StationSearch (var search: SearchParameters? = null) {
     private var hasBeenSearched = false
     var stations: List<GasStation>? = null
+
+    init {
+        if (search == null) {
+            search = SearchParameters()
+        }
+    }
 
     fun executeSearch(gasStationModel: IGasStationModel, source: IGasStationModel.DataSources) {
         GasStationModel.logger.info("findGasStationInformation $source")
 
+        println("new search : $search")
+
+        if(search == null) {
+            throw IllegalArgumentException("searchParameters is null and no previous search was done")
+            return
+        }
+
         this.stations = when(source){
-            IGasStationModel.DataSources.DATAECO -> parseGasStationJSON(source.urlStart + search.searchStr + source.urlEnd)
+            IGasStationModel.DataSources.DATAECO -> parseGasStationJSON(source.urlStart + search!!.searchStr + source.urlEnd)
             IGasStationModel.DataSources.PRIXCARBURANT -> parseGasStationXML(source.urlStart)
         }
 
@@ -33,14 +46,14 @@ class StationSearch (private val search: SearchParameters){
             GasStationModel.logger.info("No station found, retrying with $alternativeSource")
             println("No station found, retrying with $alternativeSource")
             stations = when (alternativeSource) {
-                IGasStationModel.DataSources.DATAECO -> parseGasStationJSON(alternativeSource.urlStart + search.searchStr + alternativeSource.urlEnd)
+                IGasStationModel.DataSources.DATAECO -> parseGasStationJSON(alternativeSource.urlStart + search!!.searchStr + alternativeSource.urlEnd)
                 IGasStationModel.DataSources.PRIXCARBURANT -> parseGasStationXML(alternativeSource.urlStart)
             }
             GasStationModel.logger.info("findGasStationInformation $alternativeSource done, ${stations?.size} stations found")
             println("findGasStationInformation $alternativeSource done, ${stations?.size} stations found")
         }
 
-        val searchWords = search.searchStr?.split(" ")
+        val searchWords = search!!.searchStr?.split(" ")
         val searchWordsWithAttributes = searchWords?.map {
             var isWordACity = false
             var isWordAnAddress = false
@@ -68,14 +81,14 @@ class StationSearch (private val search: SearchParameters){
 
         stations = stations?.filter { station ->
             var isOk = true
-            if(search.services != null) {
-                isOk = isOk && station.services.containsAll(search.services)
+            if(search!!.services != null) {
+                isOk = isOk && search!!.services?.let { station.services.containsAll(it) } == true
             }
-            if(search.gas != null) {
-                isOk = isOk && station.gas.any { it.type == search.gas }
+            if(search!!.gas != null) {
+                isOk = isOk && station.gas.any { it.type == search!!.gas }
             }
-            if(search.maxGasPrice != null) {
-                isOk = isOk && station.gas.any { it.price <= search.maxGasPrice }
+            if(search!!.maxGasPrice != null) {
+                isOk = isOk && station.gas.any { it.price <= search!!.maxGasPrice!! }
             }
 
             searchWordsWithAttributes?.forEach { searchWordWithAttribute ->
@@ -87,8 +100,8 @@ class StationSearch (private val search: SearchParameters){
                 else isOk && station.getSearchableString().contains(searchWordWithAttribute[0], true)
             }
 
-            if(search.maxDistance != null) {
-                isOk = isOk && station.distance != null && station.distance!! <= search.maxDistance
+            if(search!!.maxDistance != null) {
+                isOk = isOk && station.distance != null && station.distance!! <= search!!.maxDistance!!
             }
             isOk
         }
