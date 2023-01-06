@@ -27,8 +27,10 @@ class GasStationModel: IGasStationModel {
         pcs.firePropertyChange(IGasStationModel.DATATYPE_SEARCH, null, search)
     }
 
-
-
+    private var currentPosition: GeoPoint? by Delegates.observable(null) { _, _, _ ->
+        logger.info("update currentPosition")
+        pcs.firePropertyChange(IGasStationModel.DATATYPE_CURRENT_POSITION, null, currentPosition)
+    }
 
     override fun changeCurrentSelection(id: String?) {
         logger.info("changeCurrentSelection $id")
@@ -43,7 +45,6 @@ class GasStationModel: IGasStationModel {
         } else {
             pcs.addPropertyChangeListener(datatype, listener)
         }
-
     }
 
     override fun unregister(listener: PropertyChangeListener) {
@@ -56,6 +57,7 @@ class GasStationModel: IGasStationModel {
       } else search = StationSearch(searchParameters)
       searchResultGasStations = listOf()
       Thread {
+          currentPosition = GeoPointCurrentPosition()
           search!!.executeSearch(this, source)
           searchResultGasStations = search!!.stations!!
       }.start()
