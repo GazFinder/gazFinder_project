@@ -36,15 +36,28 @@ class GasStation(
             SP98("6")
         }
 
-        fun getGasTypeFromString(id: String): GasType {
-            return when(id) {
-                "1" -> GasType.GAZOLE
-                "2" -> GasType.SP95
-                "3" -> GasType.E85
-                "4" -> GasType.GPLC
-                "5" -> GasType.E10
-                "6" -> GasType.SP98
-                else -> throw IllegalArgumentException("Unknown gas type")
+        companion object{
+            fun getGasTypeFromString(id: String): GasType {
+                return when(id) {
+                    "1" -> GasType.GAZOLE
+                    "2" -> GasType.SP95
+                    "3" -> GasType.E85
+                    "4" -> GasType.GPLC
+                    "5" -> GasType.E10
+                    "6" -> GasType.SP98
+                    else -> throw IllegalArgumentException("Unknown gas type")
+                }
+            }
+
+            fun getGasIconNameFromType(gas: GasType): String {
+                return when(gas) {
+                    GasType.GAZOLE -> "B7.png"
+                    GasType.SP95 -> "E5.png"
+                    GasType.E85 -> "E85.png"
+                    GasType.GPLC -> "LPG.png"
+                    GasType.E10 -> "E10.png"
+                    GasType.SP98 -> "E5.png"
+                }
             }
         }
     }

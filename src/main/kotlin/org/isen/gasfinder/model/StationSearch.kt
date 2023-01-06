@@ -1,5 +1,8 @@
 package org.isen.gasfinder.model
 
+import org.isen.gasfinder.model.parser.parseGasStationJSON
+import org.isen.gasfinder.model.parser.parseGasStationXML
+
 
 data class SearchParameters(
     val searchStr: String? = null,
@@ -9,14 +12,14 @@ data class SearchParameters(
     val maxGasPrice: Double? = null,
 )
 
-class StationSearch (val search: SearchParameters){
-    var hasBeenSearched = false
+class StationSearch (private val search: SearchParameters){
+    private var hasBeenSearched = false
     var stations: List<GasStation>? = null
 
     fun executeSearch(gasStationModel: IGasStationModel, source: IGasStationModel.DataSources) {
         GasStationModel.logger.info("findGasStationInformation $source")
 
-        stations = when(source){
+        this.stations = when(source){
             IGasStationModel.DataSources.DATAECO -> parseGasStationJSON(source.urlStart + search.searchStr + source.urlEnd)
             IGasStationModel.DataSources.PRIXCARBURANT -> parseGasStationXML(source.urlStart)
         }

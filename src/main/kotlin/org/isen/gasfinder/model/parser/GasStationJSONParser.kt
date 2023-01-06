@@ -1,9 +1,11 @@
-package org.isen.gasfinder.model
+package org.isen.gasfinder.model.parser
 
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
 import org.apache.logging.log4j.kotlin.logger
+import org.isen.gasfinder.model.GasStation
+import org.isen.gasfinder.model.GeoPoint
 
 data class GasStationJSONParser(val records:List<Record>) {
 
@@ -13,7 +15,7 @@ data class GasStationJSONParser(val records:List<Record>) {
         }
     }
     data class Record(
-        val fields:Fields
+        val fields: Fields
     )
     data class Fields(
         val adresse: String,

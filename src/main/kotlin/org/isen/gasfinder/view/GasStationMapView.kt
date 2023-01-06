@@ -10,19 +10,22 @@ import org.isen.gasfinder.model.IGasStationModel
 import org.isen.gasfinder.view.map.StationsMap
 import org.isen.gasfinder.view.map.StationsMapPanel
 import java.awt.BorderLayout
+import java.awt.Dimension
 import java.awt.Image
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.beans.PropertyChangeEvent
 import javax.swing.*
 
-class GasStationMapView(private val controller: GasStationController) : IGasStationView, ActionListener{
+class GasStationMapView(controller: GasStationController) : IGasStationView, ActionListener{
     companion object : Logging
     private val frame: JFrame
-    private val panel: StationsMapPanel = StationsMapPanel()
+    private val mapPanel: StationsMapPanel = StationsMapPanel()
     private var image : Image? = null
     private var stationPoints : List<GeoPoint>? = null
     private var stationsMap : StationsMap? = null
+    private val listPanel: GasStationListPanel = GasStationListPanel(controller)
+
     init {
         controller.registerView(this, listOf(IGasStationModel.DATATYPE_STATIONS, IGasStationModel.DATATYPE_STATION_SELECTED))
         stationsMap = StationsMap()
@@ -40,7 +43,9 @@ class GasStationMapView(private val controller: GasStationController) : IGasStat
     private fun makeGUI(): JPanel {
         val result = JPanel()
         result.layout = BorderLayout(20, 20)
-        result.add(panel, BorderLayout.CENTER)
+        result.add(mapPanel, BorderLayout.CENTER)
+        result.add(listPanel, BorderLayout.WEST)
+        listPanel.preferredSize = Dimension(500, 0)
         return result
     }
 
@@ -59,7 +64,7 @@ class GasStationMapView(private val controller: GasStationController) : IGasStat
             if(gasStationList.isNotEmpty()) {
                 Thread {
                     stationPoints = gasStationList.map { gasStation -> gasStation.geoPoint }
-                    stationsMap?.setSize(frame.width, frame.height)
+                    stationsMap?.setSize(mapPanel.width, mapPanel.height)
                     stationsMap?.clearStations()
                     stationsMap?.addStations(stationPoints!!.map { geoPoint ->
                         Triple(
@@ -70,18 +75,19 @@ class GasStationMapView(private val controller: GasStationController) : IGasStat
                     })
                 }.start()
             }
-            panel.setLoading(true)
+            mapPanel.setLoading(true)
         }
         if(evt.propertyName == IGasStationModel.DATATYPE_STATION_SELECTED){
             Thread {
-                stationsMap?.setSize(frame.width, frame.height)
-                stationsMap?.setSelectedStation((evt.newValue as GasStation).geoPoint)
+                stationsMap?.setSize(mapPanel.width, mapPanel.height)
+                val selectedStation = evt.newValue as GasStation?
+                stationsMap?.setSelectedStation(selectedStation?.geoPoint)
             }.start()
         }
         if(evt.propertyName == "Image" && evt.newValue != null){
             image = evt.newValue as Image
-            panel.setStationsMap(image!!)
-            panel.setLoading(false)
+            mapPanel.setStationsMap(image!!)
+            mapPanel.setLoading(false)
         }
     }
 

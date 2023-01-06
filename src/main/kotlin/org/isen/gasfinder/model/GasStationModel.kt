@@ -40,7 +40,6 @@ class GasStationModel: IGasStationModel {
             pcs.addPropertyChangeListener(IGasStationModel.DATATYPE_STATIONS, listener)
             pcs.addPropertyChangeListener(IGasStationModel.DATATYPE_STATION_SELECTED, listener)
             pcs.addPropertyChangeListener(IGasStationModel.DATATYPE_SEARCH, listener)
-            //pcs.addPropertyChangeListener(IGasStationModel.DATATYPE_CARTO, listener)
         } else {
             pcs.addPropertyChangeListener(datatype, listener)
         }
@@ -48,12 +47,6 @@ class GasStationModel: IGasStationModel {
     }
 
     override fun unregister(listener: PropertyChangeListener) {
-    }
-
-    var selectedItinerary: Itinerary? = null
-
-    fun sortGasStationsByPrice() {
-        //gasStations.sortBy { it.pricePerGallon }
     }
 
   override fun searchGasStations(searchParameters : SearchParameters?, source: IGasStationModel.DataSources) {

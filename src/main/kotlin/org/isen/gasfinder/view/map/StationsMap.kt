@@ -7,6 +7,7 @@ import java.awt.geom.Point2D.distance
 import java.beans.PropertyChangeSupport
 import java.net.URL
 import javax.imageio.ImageIO
+import kotlin.math.*
 import kotlin.properties.Delegates
 
 class StationsMap {
@@ -21,7 +22,7 @@ class StationsMap {
 
     private var stations = mutableListOf<Triple<Double, Double, String>>()
     private var selected : Triple<Double, Double, String>? = null
-    private var Image: Image? by Delegates.observable(null) { _, _, newValue ->
+    private var image: Image? by Delegates.observable(null) { _, _, newValue ->
         pcs.firePropertyChange("Image", null, newValue)
     }
     fun registerToMapUpdate(listener: GasStationMapView) {
@@ -36,52 +37,54 @@ class StationsMap {
     fun setSize(width: Int, height: Int) {
         this.width = width
         this.height = height
-        generate()
     }
+
     fun clearStations() {
         stations.clear()
     }
 
-    fun setSelectedStation(station: GeoPoint) {
-        selected = Triple(station.latitude, station.longitude, station.address!!)
+    fun setSelectedStation(station: GeoPoint?) {
+        selected = station?.let { Triple(it.latitude, it.longitude, it.address!!) }
         generate()
     }
 
-    fun renderMarker(coor:Pair<Double,Double>):String {
-        return "lonlat:${coor.first},${coor.second};type:awesome;color:red;size:large;" +
+    private fun renderMarker(coords:Pair<Double,Double>):String {
+        return "lonlat:${coords.first},${coords.second};type:awesome;color:red;size:large;" +
                 "icon:local_gas_station;icontype:material;iconsize:small;textsize:small"
     }
 
-    fun renderSelectedMarker(coor:Pair<Double,Double>):String {
-        return "lonlat:${coor.first},${coor.second};type:awesome;color:cyan;size:large;" +
+    private fun renderSelectedMarker(cords:Pair<Double,Double>):String {
+        return "lonlat:${cords.first},${cords.second};type:awesome;color:cyan;size:large;" +
                 "icon:local_gas_station;icontype:material;iconsize:small;textsize:small"
     }
 
-    fun generate() {
+    private fun generate() {
         if(stations.isEmpty()) {
-            Image = null
+            image = null
             return
         }
         val centerOfMapY = stations.map { it.first }.average()
         val centerOfMapX = stations.map { it.second }.average()
 
         // Calculating the zoom in order to include all the stations
-        val maxDistance = stations.map { distance(it.first, it.second, centerOfMapX, centerOfMapY) }.max()
-        val zoom = width / (maxDistance * 4.85)
+        val maxDistance = stations.map { distance(it.second, it.first, centerOfMapX, centerOfMapY) }.max()
+        val zp = sqrt((height * height + width * width).toDouble()) * 0.0022
+        val zq = 1 - (maxDistance.pow(1/4.5) / 5.8.pow(1/4.5))
+        val zoom = zp + (10 * zq)
 
-        val url_buffer = StringBuilder(
+        val urlBuffer = StringBuilder(
             "$PREFIX_URL?style=dark-matter-yellow-roads&width=$width&height=$height" +
                     "&center=lonlat:$centerOfMapX,$centerOfMapY&zoom=$zoom"
         )
 
-        url_buffer.append("&marker=")
+        urlBuffer.append("&marker=")
             .append(stations.joinToString("|") {
                 if(it == selected) renderSelectedMarker(it.second to it.first)
                 else renderMarker(it.second to it.first)
             })
-        url_buffer.append("&apiKey=$API_KEY")
+        urlBuffer.append("&apiKey=$API_KEY")
 
-        val url = URL(url_buffer.toString())
-        Image = ImageIO.read(url)
+        val url = URL(urlBuffer.toString())
+        image = ImageIO.read(url)
     }
 }
