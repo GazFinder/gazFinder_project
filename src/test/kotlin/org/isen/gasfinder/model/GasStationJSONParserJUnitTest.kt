@@ -2,13 +2,8 @@ package org.isen.gasfinder.model
 
 
 
-import com.github.kittinunf.fuel.core.isSuccessful
-import com.github.kittinunf.fuel.httpGet
 import org.apache.logging.log4j.kotlin.Logging
-import org.isen.gasfinder.model.GasStation
-import org.isen.gasfinder.model.GasStationJSONParser
-import org.isen.gasfinder.model.IGasStationModel
-import org.isen.gasfinder.model.parseGasStationJSON
+import org.isen.gasfinder.model.parser.parseGasStationJSON
 import kotlin.test.*
 
 class GasStationJSONParserJUnitTest {

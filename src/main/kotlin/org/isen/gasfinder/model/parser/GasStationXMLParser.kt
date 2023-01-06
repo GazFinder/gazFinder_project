@@ -1,5 +1,7 @@
-package org.isen.gasfinder.model
+package org.isen.gasfinder.model.parser
 
+import org.isen.gasfinder.model.GasStation
+import org.isen.gasfinder.model.GeoPoint
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.DefaultHandler
 import java.io.InputStream
